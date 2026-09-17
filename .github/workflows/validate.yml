@@ -1,0 +1,56 @@
+name: validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  skills:
+    name: Validate SKILL.md files
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install PyYAML
+        run: pip install --quiet pyyaml
+      - name: Validate skills
+        run: python3 tools/validate_skills.py --strict
+
+      - name: Test the validator against known-bad fixtures
+        run: python3 tools/test_validator.py
+
+  shell:
+    name: Lint shell scripts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install shellcheck
+        run: sudo apt-get update && sudo apt-get install -y shellcheck
+      - name: Run shellcheck
+        run: |
+          shopt -s globstar nullglob
+          shellcheck install.sh skills/**/scripts/*.sh
+
+  php:
+    name: Lint PHP and run benchmarks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          extensions: pdo_sqlite, sqlite3
+          coverage: none
+      - name: Syntax-check every PHP file
+        run: find examples skills -name '*.php' -print0 | xargs -0 -n1 -P4 php -l
+      - name: Run the N+1 benchmark
+        run: php examples/benchmarks/prove-n-plus-one.php --rows 500
+      - name: Run the memory benchmark
+        run: php examples/benchmarks/prove-memory-blowup.php --rows 20000
