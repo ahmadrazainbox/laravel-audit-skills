@@ -11,7 +11,7 @@ Works with Claude Code, Codex CLI, Cursor, Gemini CLI and anything else that
 reads the [Agent Skills](https://agentskills.io) standard.
 
 ```bash
-git clone https://github.com/ahmadraza/laravel-audit-skills
+git clone https://github.com/ahmadrazainbox/laravel-audit-skills
 cd laravel-audit-skills && ./install.sh
 ```
 
@@ -161,6 +161,6 @@ python3 tools/validate_skills.py --strict
 
 ## Licence
 
-MIT. Built by [Ahmad Raza](https://github.com/ahmadraza) — senior full-stack
+MIT. Built by [Ahmad Raza](https://github.com/ahmadrazainbox) — senior full-stack
 developer, six years of Laravel and PHP for UK and US teams. These checks are
 the code review I have been doing by hand, written down so an agent can run it.

@@ -4,7 +4,7 @@ description: Reviews an existing Laravel codebase for the vulnerability classes 
 license: MIT
 compatibility: Requires read access to a Laravel codebase (Laravel 8 or newer). Uses Grep, Glob and Read. Optionally runs composer audit and php artisan route:list, both read-only. Never modifies code unless the user asks.
 metadata:
-  repository: https://github.com/ahmadraza/laravel-audit-skills
+  repository: https://github.com/ahmadrazainbox/laravel-audit-skills
   fixture: examples/demo-app
 ---
 

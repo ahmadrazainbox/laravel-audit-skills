@@ -4,7 +4,7 @@ description: Finds Laravel code that loads entire tables into memory - exports, 
 license: MIT
 compatibility: Requires read access to a Laravel codebase (Laravel 8 or newer). Uses Grep, Glob and Read. Suggests code changes; applies them only when the user asks.
 metadata:
-  repository: https://github.com/ahmadraza/laravel-audit-skills
+  repository: https://github.com/ahmadrazainbox/laravel-audit-skills
   fixture: examples/demo-app
 ---
 

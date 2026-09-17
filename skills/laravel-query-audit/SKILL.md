@@ -4,7 +4,7 @@ description: Audits an existing Laravel codebase for N+1 queries and Eloquent pe
 license: MIT
 compatibility: Requires read access to a Laravel codebase (Laravel 8 or newer). Uses Grep, Glob and Read. Runs no migrations and writes no files unless the user asks for fixes to be applied.
 metadata:
-  repository: https://github.com/ahmadraza/laravel-audit-skills
+  repository: https://github.com/ahmadrazainbox/laravel-audit-skills
   fixture: examples/demo-app
 ---
 
