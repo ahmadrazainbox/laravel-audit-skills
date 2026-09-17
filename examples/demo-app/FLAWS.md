@@ -12,7 +12,7 @@ line but cannot explain it has not done the job.
 
 | ID | File | Line of attack | Severity |
 |----|------|----------------|----------|
-| Q1 | `app/Http/Controllers/PostController.php` | `Post::all()` in `index()` with no eager load, feeding a view that walks three relations | high |
+| Q1 | `app/Http/Controllers/PostController.php` | `Post::all()` in `index()` with no eager load, feeding a view that walks three relations (1 + 3N) | high |
 | Q2 | `resources/views/posts/index.blade.php` | `$post->author->name` inside `@foreach` | high |
 | Q3 | `resources/views/posts/index.blade.php` | `$post->comments->count()` hydrates every comment to produce an integer | high |
 | Q4 | `resources/views/posts/index.blade.php` | `@foreach ($post->tags as $tag)` — third relation walked per row | medium |

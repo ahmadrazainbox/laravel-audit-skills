@@ -11,8 +11,8 @@ class PostController extends Controller
     public function index()
     {
         // FLAW: Post::all() with no eager loading. The view then walks
-        // $post->author and $post->comments for every row, so this is
-        // 1 + 2N queries and it grows with the table.
+        // $post->author, $post->comments and $post->tags for every row, so this
+        // is 1 + 3N queries and it grows with the table.
         $posts = Post::all();
 
         return view('posts.index', ['posts' => $posts]);

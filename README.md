@@ -72,6 +72,9 @@ and gives every fix as a diff.
 Also covers: counting by hydrating, aggregation in PHP that belongs in SQL,
 queries inside loops, and foreign keys with no index.
 
+Its locate pass ships as a script — [`scan-queries.sh`](skills/laravel-query-audit/scripts/scan-queries.sh),
+nine rules, no dependencies. See [what a real report looks like](examples/reports/query-audit.md).
+
 > *"this page takes four seconds to load"*
 
 ### `laravel-security-audit`

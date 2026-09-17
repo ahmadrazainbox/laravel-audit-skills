@@ -34,7 +34,7 @@ class ReportController extends Controller
     public function monthlyTotals()
     {
         // FLAW: loads and sums in PHP what the database can aggregate.
-        $orders = Order::where('status', 'paid')->get();
+        $orders = Order::where('status', 'paid')->orderBy('placed_at')->get();
 
         $totals = [];
         foreach ($orders as $order) {

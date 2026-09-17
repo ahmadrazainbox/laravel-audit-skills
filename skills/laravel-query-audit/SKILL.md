@@ -23,20 +23,43 @@ first pass is to spend context only where there is something to find.
 
 ### Pass 1 — locate candidates
 
-Search for the patterns below. Every hit is a *candidate*, not a finding.
+Run the scanner. It does the mechanical work — statement joining so a chain
+broken across five lines is judged as one thing, brace-depth tracking so
+"inside a loop" means inside a loop, and string-literal stripping so `{$var}`
+interpolation does not corrupt either.
 
-| Pattern | What to search for |
+```bash
+./scripts/scan-queries.sh /path/to/laravel-app
+./scripts/scan-queries.sh . --json            # machine-readable
+./scripts/scan-queries.sh . --rules Q-ALL,Q-LOOP-QUERY
+```
+
+It excludes `vendor/`, `tests/`, seeders and factories — a seeder calling
+`Model::all()` is doing its job.
+
+Every hit is a **candidate**, not a finding. The rules:
+
+| Rule | What it matches |
 |---|---|
-| Unbounded loads | `Model::all()`, `->get()` with no `where`/`limit`, in controllers and jobs |
-| Relations in views | `->` chains on a loop variable inside `@foreach` in Blade templates |
-| Counting by hydrating | `->relation->count()`, `count($model->relation)` |
-| Queries inside loops | `->get()`, `->first()`, `->count()`, `DB::table(` inside `foreach`/`while`/`->map(`/`->each(` |
-| Aggregation in PHP | `foreach` accumulating a sum or grouping rows that SQL could `GROUP BY` |
-| Missing eager loads | controller returns a collection to a view that walks a relation, with no `with(` on the query |
-| Unindexed columns | columns used in `where`/`orderBy`/`join` with no matching index in `database/migrations` |
+| `Q-ALL` | `Model::all()` — the whole table, no pagination |
+| `Q-UNBOUNDED-GET` | `->get()` with no `where`, `limit` or `paginate` |
+| `Q-LOOP-QUERY` | a query executed inside a loop body |
+| `Q-LOOP-RELATION` | a relation chain read inside a loop body |
+| `Q-COUNT-HYDRATE` | `->relation->count()` — loading rows to produce an integer |
+| `Q-PHP-AGGREGATE` | summing or grouping in PHP that SQL could `GROUP BY` |
+| `Q-BLADE-RELATION` | a relation walked inside `@foreach` |
+| `Q-BLADE-NESTED-LOOP` | a nested `@foreach` over a relation of the outer row |
+| `Q-MISSING-INDEX` | an unindexed column that is a foreign key, or is filtered/sorted on |
 
-Cross-reference the last two: a relation accessed in a Blade file is only an
-N+1 if the controller feeding that view did not eager load it.
+[references/n-plus-one-patterns.md](references/n-plus-one-patterns.md) has the
+full catalogue: what each rule matches, how to confirm it, and the fix.
+[references/indexing-rules.md](references/indexing-rules.md) covers when an
+index is the fix, composite column order, and when adding one makes things
+worse.
+
+If the scanner will not run — no bash, an unusual layout — fall back to
+searching for those patterns by hand with Grep. The rules table above is the
+search list.
 
 ### Pass 2 — confirm each candidate
 
@@ -138,5 +161,6 @@ If the project has Telescope, Debugbar or Nightwatch installed, use it — it is
 already measuring this.
 
 A worked before/after on a fixture with these exact flaws lives in
-`examples/demo-app` and `examples/benchmarks` in this skill's repository:
-at 500 posts the pattern above measures 1,001 queries against 3.
+`examples/demo-app` and `examples/benchmarks` in this skill's repository, and
+`examples/reports/query-audit.md` is this skill's real output on it. At 500
+posts the pattern above measures 1,001 queries against 3.

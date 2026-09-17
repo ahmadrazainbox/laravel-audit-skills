@@ -79,7 +79,12 @@ printf '\n\033[1mlaravel-audit-skills\033[0m -> %s (%s, %s scope)\n\n' "$DEST" "
 if [ "$UNINSTALL" -eq 1 ]; then
     for s in "${skills[@]}"; do
         if [ -d "$DEST/$s" ]; then
-            [ "$DRY_RUN" -eq 1 ] && info "would remove $DEST/$s" || { rm -rf "${DEST:?}/$s"; ok "removed $s"; }
+            if [ "$DRY_RUN" -eq 1 ]; then
+                info "would remove $DEST/$s"
+            else
+                rm -rf "${DEST:?}/$s"
+                ok "removed $s"
+            fi
         else
             info "not installed: $s"
         fi

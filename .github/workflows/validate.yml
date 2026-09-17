@@ -54,3 +54,14 @@ jobs:
         run: php examples/benchmarks/prove-n-plus-one.php --rows 500
       - name: Run the memory benchmark
         run: php examples/benchmarks/prove-memory-blowup.php --rows 20000
+
+  fixture:
+    name: Score scanners against the answer key
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Recall and precision on demo-app
+        run: python3 tools/score_fixture.py
